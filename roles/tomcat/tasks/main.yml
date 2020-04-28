@@ -1,0 +1,44 @@
+---
+    - name: install tomcat8
+      get_url:
+        url: "{{ tomcat_url }}"
+        dest: /opt
+
+    - name: unachive tomcat8
+      unarchive:
+        src: /opt/apache-tomcat-8.0.32.tar.gz
+        dest: /opt
+        remote_src: yes
+
+    - name: install jenkins
+      get_url:
+        url: "{{ jenkins_url }}"
+        dest: /opt/apache-tomcat-8.0.32/webapps
+
+    - name: port 8080
+      command: firewall-cmd --permanent --add-port=8080/tcp
+
+    - name: reload
+      command: firewall-cmd --reload
+
+    - name: set up tomcat-users.xml
+      copy:
+        src: roles/tomcat/files/tomcat-users.xml
+        dest: /opt/apache-tomcat-8.0.32/conf
+        mode: 0755
+
+    - name: setup tomcat as a service
+      copy:
+        src: roles/tomcat/files/tomcat.service
+        dest: /usr/lib/systemd/system
+        mode: 0755
+
+    - name: reload systemd daemon
+      command: systemctl daemon-reload
+
+    - name: enable tomcat
+      command: systemctl enable tomcat.service
+
+    - name: start tomcat
+      command: systemctl start tomcat.service
+

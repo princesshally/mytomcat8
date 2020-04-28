@@ -1,0 +1,16 @@
+[unit]
+Description=Tomcat 8 servlet container
+After=network.target
+
+[Service]
+Type=oneshot
+
+ExecStart=/opt/apache-tomcat-8.0.32/bin/startup.sh
+ExecStop=/opt/apache-tomcat-8.0.32/bin/shutdown.sh
+RemainAfterExit=yes
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
+
